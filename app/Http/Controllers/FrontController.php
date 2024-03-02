@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Kategori;
 use App\Models\Menu;
+use App\Models\Pelanggan;
+use App\Models\Kategoris;
+
 use Illuminate\Http\Request;
 
 class FrontController extends Controller
@@ -14,7 +17,7 @@ class FrontController extends Controller
     public function index()
     {
     $kategoris = Kategori::all();
-    $menus = Menu::all();
+    $menus = Menu::paginate(3);
 
 
     return view('menu',[
@@ -42,9 +45,14 @@ class FrontController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show ($id)
     {
-        //
+        $kategoris=Kategori::all();
+        $menus=Menu::where('idkategori',$id)->paginate(3);
+        return view('kategori',[
+            'kategoris'=>$kategoris,
+            'menus'=>$menus
+        ]);
     }
 
     /**
@@ -69,5 +77,12 @@ class FrontController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+
+   public function register() 
+    {
+        $kategoris = Kategori::all();
+        return view ('register',['Kategoris'=>$kategoris]);
     }
 }
