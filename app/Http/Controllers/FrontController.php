@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Kategori;
 use App\Models\Menu;
 use App\Models\Pelanggan;
-use App\Models\Kategoris;
-
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
 class FrontController extends Controller
 {
     /**
@@ -17,13 +14,12 @@ class FrontController extends Controller
      */
     public function index()
     {
-    $kategoris = Kategori::all();
-    $menus = Menu::paginate(3);
-
-
-    return view('menu',[
-        'kategoris'=>$kategoris,
-        'menus'=>$menus
+        //
+        $kategoris = Kategori::all();
+        $menus = Menu::paginate(3);
+        return view('kategori', [
+            'kategoris' => $kategoris,
+            'menus' => $menus
         ]);
     }
 
@@ -40,36 +36,39 @@ class FrontController extends Controller
      */
     public function store(Request $request)
     {
-       $data = $request->validate([
+        //
+        $data = $request->validate([
+            'pelanggan' => 'required',
+            'alamat' => 'required',
+            'telepon' => 'required',
+            'jeniskelamin' => 'required',
+            'email' => 'required | email |unique:pelanggans',
+            'password' => 'required |min:3',
+        ]);
 
-        'pelanggan' => 'required',
-        'almat' => 'required',
-        'telp' => 'required',
-        'jeniskelamin' => 'required',
-        'email' => 'required | email |unique:pelanggans',
-        'password' => 'required | min:3',
+        Pelanggan::create([
+            'pelanggan' => $data['pelanggan'],
+            'jeniskelamin' => $data['jeniskelamin'],
+            'alamat' => $data['alamat'],
+            'telepon' => $data['telepon'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password'])
+        ]);
 
-        ]); 
-       Pelanggan::create([
-        'pelanggan' =>$data['pelanggan'],
-        'jeniskelamin' =>$data['jeniskelamin'],
-        'alamat' =>$data['alamat'],
-        'telp' =>$data['telp'],
-        'email' =>$data['email'],
-        'password' => Hash::make( $data['password']),
-       ]);
+        return redirect('/');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show ($id)
+    public function show(string $id)
     {
-        $kategoris=Kategori::all();
-        $menus=Menu::where('idkategori',$id)->paginate(3);
-        return view('kategori',[
-            'kategoris'=>$kategoris,
-            'menus'=>$menus
+        //
+        $kategori = Kategori::all();
+        $menus = Menu::where('idkategori', $id)->paginate(3);
+        return view('kategori', [
+            'kategoris' => $kategori,
+            'menus' => $menus
         ]);
     }
 
@@ -97,48 +96,46 @@ class FrontController extends Controller
         //
     }
 
-
-   public function register() 
-    {
-        $kategoris = Kategori::all();
-        return view ('register',['Kategoris'=>$kategoris]);
+    public function register() {
+        $kategori = Kategori::all();
+        return view('register', ['kategoris' => $kategori]);
     }
 
-    public function login()
-    {
-        $kategoris = Kategori::all();
-        return view('login',['kategoris' => $kategoris]);
+    public function login() {
+        $kategori = Kategori::all();
+        return view('login',['kategoris'=>$kategori]);
     }
 
-    public function postlogin(Request $request)
-    {
+    public function postlogin(Request $request) {
         $data = $request->validate([
             'email'=>'required',
-            'passqord'=>'required|min:3'
+            'password'=>'required|min:3',
         ]);
-        $pelanggan = Pelanggan::where('email',$data)->first();
 
-        if($pelanggan){
-            if (Hash::check($data['password'],$pelanggan['password'])) {
-               $data=[
-                'idpelanggan' => $pelanggan['idpelanggan'],
-                'email' => $pelanggan['email'],
-               ];
+        $pelanggan = Pelanggan::where('email', $data) -> first();
 
-               $request->session()->put('idpelanggan');
-               return redirect('/');
+        if ($pelanggan) {
+            if (Hash::check($data['password'], $pelanggan['password'])) {
+                $data = [
+                    'idpelanggan' => $pelanggan['idpelanggan'],
+                    'email' => $pelanggan['email'],
+                ];
+
+                $request->session() -> put('idpelanggan',$data);
+
+                return redirect('/');
             } else {
-                return back()->with('pesan','password salah !');
+                return back()->with('pesan','Password Salah !');
             }
-            
-        }else{
-            return back()->with('pesan','email belum terdaftar !');
+
+        } else {
+            return back() -> with('pesan','Email belum terdaftar');
         }
+
     }
 
-    public function logout()
-    {
-        session()->flush();
+    public function logout() {
+        session() -> flush();
         return redirect('/');
     }
 }
