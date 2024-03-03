@@ -15,10 +15,20 @@
                     <a href="/"><img style="width: 300px" src="{{ asset('gambar/logo.jpeg') }}" alt=""></a>
                     <ul class="navbar-nav gap-5">
                         <li class="nav-item">Cart</li>
-                        <li class="nav-item"><a href="{{ url('register') }}">Register</a></li>
-                        <li class="nav-item">Email</li>
-                        <li class="nav-item">login</li>
-                        <li class="nav-item">logout</li>
+
+                        @if (session()->missing('idpelanggan'))
+                            <li class="nav-item"><a href="{{ url('register') }}">Register</a></li>
+                            <li class="nav-item"><a href="{{ url('login') }}">Login</a>
+                        @endif
+
+
+                        
+                            @if (session()->has(idpelanggan))
+                               <li class="nav-item"> {{ session('idpelanggan')['email'] }}</li>  
+                            @endif
+                        </li>
+                        
+                        <li class="nav-item"><a href="{{ url('logout') }}">Logout</a></li>
                     </ul>
                 </div>
             </nav>
@@ -26,7 +36,7 @@
         <div class="row mt-4">
             <div class="col-2">
                 <ul class="list-group">
-                    @foreach($kategoris as $kategori)
+                    @foreach($kategoris as$kategori)
                     <li class="list-group-item"><a href="{{ url('show/'.$kategori->idkategori) }}">{{ $kategori -> kategori }}</a></li>
                     @endforeach
                 </ul>

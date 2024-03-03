@@ -8,6 +8,7 @@ use App\Models\Pelanggan;
 use App\Models\Kategoris;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class FrontController extends Controller
 {
@@ -39,7 +40,24 @@ class FrontController extends Controller
      */
     public function store(Request $request)
     {
-        //
+       $data = $request->validate([
+
+        'pelanggan' => 'required',
+        'almat' => 'required',
+        'telp' => 'required',
+        'jeniskelamin' => 'required',
+        'email' => 'required | email |unique:pelanggans',
+        'password' => 'required | min:3',
+
+        ]); 
+       Pelanggan::create([
+        'pelanggan' =>$data['pelanggan'],
+        'jeniskelamin' =>$data['jeniskelamin'],
+        'alamat' =>$data['alamat'],
+        'telp' =>$data['telp'],
+        'email' =>$data['email'],
+        'password' => Hash::make( $data['password']),
+       ]);
     }
 
     /**
@@ -84,5 +102,43 @@ class FrontController extends Controller
     {
         $kategoris = Kategori::all();
         return view ('register',['Kategoris'=>$kategoris]);
+    }
+
+    public function login()
+    {
+        $kategoris = Kategori::all();
+        return view('login',['kategoris' => $kategoris]);
+    }
+
+    public function postlogin(Request $request)
+    {
+        $data = $request->validate([
+            'email'=>'required',
+            'passqord'=>'required|min:3'
+        ]);
+        $pelanggan = Pelanggan::where('email',$data)->first();
+
+        if($pelanggan){
+            if (Hash::check($data['password'],$pelanggan['password'])) {
+               $data=[
+                'idpelanggan' => $pelanggan['idpelanggan'],
+                'email' => $pelanggan['email'],
+               ];
+
+               $request->session()->put('idpelanggan');
+               return redirect('/');
+            } else {
+                return back()->with('pesan','password salah !');
+            }
+            
+        }else{
+            return back()->with('pesan','email belum terdaftar !');
+        }
+    }
+
+    public function logout()
+    {
+        session()->flush();
+        return redirect('/');
     }
 }
