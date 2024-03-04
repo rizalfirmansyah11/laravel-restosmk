@@ -93,12 +93,9 @@ class OrderController extends Controller
             'bayar'=>$data['bayar'],
             'kembali'=>$kembali,
             'status'=>1,
-        ]);
-        
-        
+        ]);   
         return redirect('admin/order');
     }
-
     /**
      * Remove the specified resource from storage.
      *

@@ -37,8 +37,6 @@
                             }
                         @endphp
                     <td>{!! $status !!}</td>
-
-  
                     </tr>
                 @endforeach
             </tbody>

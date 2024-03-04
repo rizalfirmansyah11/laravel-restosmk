@@ -52,9 +52,11 @@ Route::post('admin/postlogin',[AuthController::class,'postlogin']);
 Route::get('admin/logout',[AuthController::class,'logout']);
 
 Route::group(['prefix'=>'admin','middleware'=>['auth']],function(){
+
     Route::group(['Middleware' => ['CekLogin:admin']],function(){
         Route::resource('user',UserController::class);
     });
+
     Route::group(['Middleware' => ['CekLogin:kasir']],function(){
         Route::resource('order',OrderController::class);
     });
