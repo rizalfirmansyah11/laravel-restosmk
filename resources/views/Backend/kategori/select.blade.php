@@ -4,9 +4,12 @@
     <div>
         <h1>Kategori</h1>
     </div>
+
+
     <div>
         <a href="{{ url('admin/kategori/create') }}" class="btn btn-primary ">Tambah Data</a>
     </div>
+
     <div>
         <table class="table">
             <thead>
@@ -17,6 +20,7 @@
                     <th>Hapus</th>
                 </tr>
             </thead>
+            
             @php
                 $no=1;
             @endphp

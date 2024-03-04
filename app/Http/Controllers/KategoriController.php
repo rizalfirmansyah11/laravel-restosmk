@@ -8,6 +8,8 @@ use App\Http\Requests\StoreKategoriRequest;
 use App\Http\Requests\UpdateKategoriRequest;
 
 class KategoriController extends Controller
+
+
 {
     /**
      * Display a listing of the resource.
@@ -94,6 +96,8 @@ class KategoriController extends Controller
         
         return redirect('admin/kategori');
     }
+
+
 
     /**
      * Remove the specified resource from storage.
