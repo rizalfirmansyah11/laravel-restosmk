@@ -71,4 +71,5 @@ Route::group(['prefix'=>'admin','middleware'=>['auth']],function(){
         Route::post('postmenu/{id}',[MenuController::class,'update']);
     });
 
+    
 });

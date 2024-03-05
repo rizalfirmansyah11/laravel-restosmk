@@ -39,9 +39,11 @@
                     @endif
                 </ul>
             </div>
+
             <div class="col-10">
                 @yield('admincontent')
             </div>
+            
         </div>
         <div class="bg-light mt-5">
             <p class="text-center">@smkrevit.com</p>
